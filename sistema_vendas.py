@@ -1,4 +1,6 @@
-subtotal = 0
+from selectors import SelectSelector
+from xml.dom.minidom import ProcessingInstruction
+
 estoque_sistema = {
     1 : { "nome": "chocolate 823 callebaut 2.5kg", "preco": 395.00, "quantidade" : 180},
     2 : { "nome": "chocolate nobre sicao ao leite 1kg", "preco": 215.00,"quantidade" : 255 },
@@ -10,18 +12,20 @@ estoque_sistema = {
     8 : { "nome": "po para decoração 5g dourado mix","preco": 10.99, "quantidade": 180 }
 }
 carrinho =[]
-
+subtotal = 0
 print("🌟"*32)
 print("☆*: .｡. o(≧▽≦)o .｡.:*☆SEJA BEM VINDO A MINHA CONFEITARIA🍫 ╰(*°▽°*)╯")
 print("🌟"*32)
 while True:
+    print("-" * 30)
     print(" [1] Visualizar estoque.")
     print(" [2] Adicionar item ao carrinho.")
     print(" [3] Visualizar carrinho.")
     print(" [4] Finalizar compra.")
     print(" [0] Sair do sistema.")
-
+    print("-" * 30)
     opcao = int(input("Escolha uma opção: "))
+    print("-" * 30)
 
     if opcao == 1:
         print("Visualizando Estoque!")
@@ -46,26 +50,40 @@ while True:
                 estoque_sistema[id_produto]["quantidade"] -= qtd_produto
                 print(item)
             else:
+                print("-" * 30)
                 print(f"Quantidades indisponivel, temos apenas {estoque_sistema[id_produto]["quantidade"]} unidades no estoque.")
+        else:
+            print("ID inexistente tente novamente")
 
     elif opcao == 3:
-        print("Visulaizando Carrinho!")
-
-        for i in carrinho:
-            print(f"{i["quantidade"]}x {i["nome"]} no valor de R${i["preco"]}(cada)\n Total R${i["preco_total"]}")
-            subtotal += i["preco_total"]
+        if carrinho:
+            print("Visulaizando Carrinho!")
+            for i in carrinho:
+                 if subtotal != i["preco_total"]:
+                     subtotal += i["preco_total"]
             print(f"Subtotal da Compra R${subtotal}")
+        else:
+            print("O carrinho esta vazio, Por favor adicione algum item nele")
 
     elif opcao == 4:
-       print("Finalizando Compra")
-       cupom = input("Digite o Nome do cupom🏷️")
-       if estoque_sistema:
-           while estoque_sistema:
-               print(" [1] cartao debito."),
-               print(" [2] cartao credito."),
-               print(" [3] pix."),
-               print(" [4] inserir cupom."),
-               print(" [5] dinheiro.")
+        desconto = 0
+        print(f"Sua compra é de:R${carrinho}")
+        cupom = input("Digite o Nome do cupom🏷️, Caso não tenha aperte ENTER: ")
+        if cupom == "DEV10":
+            desconto = subtotal * 0.1
+            print(f"Cupom valido: você obteve 10% de desconto que foi {desconto}")
+        elif cupom == "DEV20" and subtotal > 500:
+            print(f"Cupom valido: você obteve 20% de desconto {desconto}")
+
+        else:
+            print("Cupom Invalido ou não possui Cupom")
+            print(" [1] cartao debito.")
+            print(" [2] cartao credito.")
+            print(" [3] pix.")
+            print(" [4] dinheiro.")
+            f_p = int(input("Selecione forma de pagamento: "))
+            print("Pagamento Finalizado, Muito Obrigado por Comprar conosco,Volte sermpre!")
+            break
 
 
     elif opcao == 0:
